@@ -24,3 +24,15 @@ success inializing and loading files.
 start loop calculation
 finished time	2019/08/22 Thu 11:16:30
 <success calculation>
+
+<start CTR-structure>
+start time	2019/10/17 Thu 11:27:59
+output file(folder) name	output
+bulk's filename	.\substrate.dat
+film filename	.\surf.dat
+intensity filename	.\int.dat
+DELTA	0.010000
+LOOP_NUM	100
+MU	0.020000
+success inializing and loading files.
+start loop calculation

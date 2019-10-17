@@ -87,11 +87,8 @@ namespace CTRstructure {//グローバル空間汚染防止
 	汎用関数
 	文字列strを文字regexにて分割し、vector形式の配列で返す
 	javaのstr.split(String regex,-1)と同じ処理
-
 	strに2バイト文字を入れた場合どうなるかは不明
-
 	Gneneral function: split a string.
-
 	*/
 	vector<string> splitStr(const string str, const char regex) {
 		try {
@@ -123,7 +120,6 @@ namespace CTRstructure {//グローバル空間汚染防止
 	/**
 	乱数生成器
 	gaussSwitchをTrueにするとガウス乱数、falseにすると０から１の一様乱数
-
 	Random number generator.
 	gaussSwitch=True  :  Gaussian random numbers,
 	gaussSwitch=false :  uniform random numbers,
@@ -146,7 +142,6 @@ namespace CTRstructure {//グローバル空間汚染防止
 	/*
 	原子散乱因子のデータを管理する
 	異常分散構造のデータもここで管理する
-
 	Atomic scattering factor and anomalous dispersion are treated in this class.
 	*/
 	class F0Data {
@@ -234,7 +229,7 @@ namespace CTRstructure {//グローバル空間汚染防止
 					return 0;
 				}
 				if (atomicNumber > MAX_ELEMENTS) {
-					runtime_error e("ArrayIndexOutOfBoundsException(atomicNuber >MAX_ELEMENTS)");
+					runtime_error e("ArrayIndexOutOfBoundsException(atomicNumber >MAX_ELEMENTS)");
 					outError(e, __LINE__);
 					throw e;
 				}
@@ -324,6 +319,7 @@ namespace CTRstructure {//グローバル空間汚染防止
 			case 6:
 				return("foccf");
 			}
+			return "";
 		}
 
 		void addConnect(const int connectParam, const int atomIndex, const int paramIndex, const string ratio) {
@@ -413,7 +409,7 @@ namespace CTRstructure {//グローバル空間汚染防止
 						fitPar = fitPar / 10;
 					}
 					//接続パラメーター
-					for (int i = 0; i < 7; i++) {
+					for (int i = 0; i < AtomData::PARAM_NUM; i++) {
 						vector<string>connectAtomStr = splitStr(strList[3 * i + 11], ',');
 						vector<string>connectParStr = splitStr(strList[3 * i + 12], ',');
 						vector<string>connectRatioStr = splitStr(strList[3 * i + 13], ',');
@@ -433,7 +429,7 @@ namespace CTRstructure {//グローバル空間汚染防止
 						}
 					}
 					//拘束パラメーター
-					for (long i = 0; i < 7; i++) {
+					for (long i = 0; i < AtomData::PARAM_NUM; i++) {
 						try {
 							atomData[atomNum].prospectMin[i] = stod(strList[2 * i + 32]);
 						}
@@ -626,7 +622,6 @@ namespace CTRstructure {//グローバル空間汚染防止
 		バルクファイルはタブ区切りで書式は
 		１行目:a b c alpha beta gamma
 		２行目以降:通し番号 ダミー 原子番号 x y z B occ
-
 		Read out the bulk file.
 		1st line: a b c alpha beta gamma
 		2nd line and later: index dummy atomic_number x y z B occ
@@ -794,7 +789,7 @@ namespace CTRstructure {//グローバル空間汚染防止
 			try {
 				expData->storeF(film, bulk, *f0Data);
 				for (int n = 0; n < expData->dataNum; n++) {
-					F[n] = bulk.calcF(expData->q[n], expData->h[n], expData->k[n], expData->l[n], *f0Data,film.bulkB);
+					F[n] = bulk.calcF(expData->q[n], expData->h[n], expData->k[n], expData->l[n], *f0Data, film.bulkB);
 					for (int i = 0; i < film.atomNum; i++) {
 						Ff[i][n] = film.calcF(i, expData->h[n], expData->k[n], expData->l[n], expData->q[n], expData->f[n][i]);
 						F[n] += Ff[i][n];
@@ -977,7 +972,7 @@ namespace CTRstructure {//グローバル空間汚染防止
 
 					}
 					for (int n = 0; n < film.atomNum; n++) {
-						for (int i = 0; i < 6; i++) {
+						for (int i = 0; i < AtomData::PARAM_NUM; i++) {
 							data[l][n][i] = film.atomData[n].param[i];
 						}
 					}
@@ -1217,7 +1212,7 @@ namespace CTRstructure {//グローバル空間汚染防止
 						int replicaIndex = Replica::repIndexFromTindex(replica, T);
 						for (int l = 0; l < LOOP_NUM; l += RECORD_NUM) {
 							for (int n = 0; n < filmData->atomNum; n++) {
-								for (int k = 0; k < 6; k++) {
+								for (int k = 0; k < AtomData::PARAM_NUM; k++) {
 									if (filmData->atomData[n].move[k]) {
 										outPar[T] << replica[replicaIndex].data[l][n][k] << "\t";
 									}
